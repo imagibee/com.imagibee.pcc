@@ -2,10 +2,9 @@ using Unity.Burst;
 using Unity.Jobs;
 using Unity.Collections;
 using Unity.Mathematics;
-using UnityEngine;
 using System;
 
-namespace Imagibee.AudioId
+namespace Imagibee.Parallel
 {
     [BurstCompile]
     public struct CorrelationJob : IDisposable
@@ -58,19 +57,17 @@ namespace Imagibee.AudioId
 
         public void Allocate()
         {
-            if (X.IsCreated == false) {
-                X = new NativeArray<float>(Length, Allocator);
-                Y = new NativeArray<float>(Length, Allocator);
-                SumX = new NativeArray<float>(Length, Allocator);
-                SumY = new NativeArray<float>(Length, Allocator);
-                ProdXY = new NativeArray<float>(Length, Allocator);
-                ProdXX = new NativeArray<float>(Length, Allocator);
-                ProdYY = new NativeArray<float>(Length, Allocator);
-                SumProdXY = new NativeArray<float>(Length, Allocator);
-                SumProdXX = new NativeArray<float>(Length, Allocator);
-                SumProdYY = new NativeArray<float>(Length, Allocator);
-                Result = new NativeReference<float>(Allocator);
-            }
+            X = new NativeArray<float>(Length, Allocator);
+            Y = new NativeArray<float>(Length, Allocator);
+            SumX = new NativeArray<float>(Length, Allocator);
+            SumY = new NativeArray<float>(Length, Allocator);
+            ProdXY = new NativeArray<float>(Length, Allocator);
+            ProdXX = new NativeArray<float>(Length, Allocator);
+            ProdYY = new NativeArray<float>(Length, Allocator);
+            SumProdXY = new NativeArray<float>(Length, Allocator);
+            SumProdXX = new NativeArray<float>(Length, Allocator);
+            SumProdYY = new NativeArray<float>(Length, Allocator);
+            Result = new NativeReference<float>(Allocator);
         }
 
         public JobHandle Schedule(JobHandle deps = new JobHandle())
@@ -159,7 +156,6 @@ namespace Imagibee.AudioId
         }
     }
 
-    [BurstCompile]
     public struct Baseline
     {
         // Returns the Pearson correlation coefficient of two arrays
@@ -175,7 +171,7 @@ namespace Imagibee.AudioId
                 math.sqrt(n * SumProd(y, y) - sumY * sumY);
         }
 
-        // Returns the sum of the values
+        // Returns the sum of the array
         public static float Sum(float[] x)
         {
             var sum = 0f;
@@ -185,7 +181,7 @@ namespace Imagibee.AudioId
             return sum;
         }
 
-        // Returns the sum of the square of the values
+        // Returns the sum of the product of the arrays
         public static float SumProd(float[] x, float[] y)
         {
             var sum = 0f;

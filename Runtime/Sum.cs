@@ -2,10 +2,9 @@ using Unity.Burst;
 using Unity.Jobs;
 using Unity.Collections;
 using Unity.Mathematics;
-using UnityEngine;
 using System;
 
-namespace Imagibee.AudioId {
+namespace Imagibee.Parallel {
 
     [BurstCompile]
     public struct SumJob : IDisposable
