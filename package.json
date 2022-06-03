@@ -1,0 +1,10 @@
+{
+  "name": "com.imagibee.parallel",
+  "version": "0.0.1",
+  "displayName": "Imagibee Parallel",
+  "description": "Audio classifier",
+  "unity": "2020.3",
+  "dependencies": {
+    "com.unity.entities": "0.50.1-preview.2"
+  }
+}
