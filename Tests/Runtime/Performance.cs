@@ -1,8 +1,7 @@
 using NUnit.Framework;
 using Unity.PerformanceTesting;
 using Unity.Collections;
-using UnityEngine;
-using Imagibee.AudioId;
+using Imagibee.Parallel;
 
 public class Performance {
     private readonly int[] LENGTHS = { 1000, 1000000 };
@@ -107,7 +106,7 @@ public class Performance {
             {
                 correlationJob.X.CopyFrom(x);
                 correlationJob.Y.CopyFrom(x);
-            }).SampleGroup($"Parallel CopyFrom (length={LENGTHS[i]})").Run();
+            }).SampleGroup($"Parallel copy from (length={LENGTHS[i]})").Run();
             correlationJob.Dispose();
         }
     }
