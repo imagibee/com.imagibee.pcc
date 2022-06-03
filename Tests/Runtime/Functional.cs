@@ -1,7 +1,6 @@
 using NUnit.Framework;
 using Unity.Collections;
-using UnityEngine;
-using Imagibee.AudioId;
+using Imagibee.Parallel;
 
 public class Functional
 {
@@ -21,15 +20,15 @@ public class Functional
     [Test]
     public void ParallelSum()
     {
-        var r = new SumJob()
+        var sumJob = new SumJob()
         {
             Src = new NativeArray<float>(5, Allocator.TempJob),
             Dst = new NativeArray<float>(5, Allocator.TempJob)
         };
-        r.Src.CopyFrom(new float[] { 1, 2, 3, 4, 5 });
-        r.Schedule(r.Src.Length, 2).Complete();
-        var result = r.Dst[0];
-        r.Dispose();
+        sumJob.Src.CopyFrom(new float[] { 1, 2, 3, 4, 5 });
+        sumJob.Schedule(sumJob.Src.Length, 2).Complete();
+        var result = sumJob.Dst[0];
+        sumJob.Dispose();
         Assert.AreEqual(15f, result);
     }
 
@@ -69,7 +68,7 @@ public class Functional
         {
             Allocator = Allocator.Persistent,
             Length = x.Length,
-            Width = 2
+            Width = x.Length / 2
         };
         correlationJob.Allocate();
         correlationJob.X.CopyFrom(x);

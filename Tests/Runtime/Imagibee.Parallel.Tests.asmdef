@@ -2,11 +2,11 @@
     "name": "Tests",
     "rootNamespace": "",
     "references": [
-        "Imagibee.AudioId",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "Unity.PerformanceTesting",
-        "Unity.Collections"
+        "Unity.Collections",
+        "Imagibee.Parallel"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
