@@ -1,2 +1,2 @@
 # com.imagibee.parallel
-General parallel processing support
+Generic parallel processing support
