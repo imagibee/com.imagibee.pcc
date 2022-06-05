@@ -2,7 +2,9 @@
   "name": "com.imagibee.parallel",
   "version": "0.0.1",
   "displayName": "Imagibee Parallel",
-  "description": "Audio classifier",
+  "description": "A variety of parallel processing routines",
+  "documentationUrl": "https://github.com/imagibee/com.imagibee.parallel/blob/v0.0.1/README.md",
+  "licensesUrl": "https://github.com/imagibee/com.imagibee.parallel/blob/v0.0.1/LICENSE",
   "unity": "2020.3",
   "dependencies": {
     "com.unity.entities": "0.50.1-preview.2"
