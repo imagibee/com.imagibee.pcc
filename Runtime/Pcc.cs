@@ -7,7 +7,7 @@ using System;
 namespace Imagibee.Parallel
 {
     [BurstCompile]
-    public struct CorrelationJob : IDisposable
+    public struct PccJob : IDisposable
     {
         public Allocator Allocator;
         public int Length;
@@ -37,7 +37,7 @@ namespace Imagibee.Parallel
         public NativeReference<float> Result;
 
         [BurstCompile]
-        struct MergeCorrelationJob : IJob {
+        struct MergePccJob : IJob {
             public NativeArray<float> SumX;
             public NativeArray<float> SumY;
             public NativeArray<float> SumProdXY;
@@ -115,7 +115,7 @@ namespace Imagibee.Parallel
                 Src = ProdYY,
                 Dst = SumProdYY
             };
-            var correlation = new MergeCorrelationJob
+            var correlation = new MergePccJob
             {
                 SumX = SumX,
                 SumY = SumY,
@@ -153,42 +153,6 @@ namespace Imagibee.Parallel
             SumProdXX.Dispose();
             SumProdYY.Dispose();
             Result.Dispose();
-        }
-    }
-
-    public struct Baseline
-    {
-        // Returns the Pearson correlation coefficient of two arrays
-        // (see https://en.wikipedia.org/wiki/Pearson_correlation_coefficient)
-        public static float Correlation(float[] x, float[] y)
-        {
-            var sumX = Sum(x);
-            var sumY = Sum(y);
-            var n = x.Length;
-            return
-                (n * SumProd(x, y) - sumX * sumY) /
-                math.sqrt(n * SumProd(x, x) - sumX * sumX) /
-                math.sqrt(n * SumProd(y, y) - sumY * sumY);
-        }
-
-        // Returns the sum of the array
-        public static float Sum(float[] x)
-        {
-            var sum = 0f;
-            for (var i=0; i<x.Length; ++i) {
-                sum += x[i];
-            }
-            return sum;
-        }
-
-        // Returns the sum of the product of the arrays
-        public static float SumProd(float[] x, float[] y)
-        {
-            var sum = 0f;
-            for (var i=0; i<x.Length; ++i) {
-                sum += x[i] * y[i];
-            }
-            return sum;
         }
     }
 }

@@ -36,50 +36,50 @@ public class Functional
     public void ParallelProduct()
     {
         var data = new float[] { 1, 2, 3, 4, 5 };
-        var prodJob = new ProductJob
+        var dotJob = new ProductJob
         {
             Src1 = new NativeArray<float>(data.Length, Allocator.TempJob),
             Src2 = new NativeArray<float>(data.Length, Allocator.TempJob),
             Dst = new NativeArray<float>(data.Length, Allocator.TempJob)
         };
-        prodJob.Src1.CopyFrom(data);
-        prodJob.Src2.CopyFrom(data);
-        prodJob.Schedule(data.Length, 2).Complete();
-        prodJob.Dst.CopyTo(data);
-        prodJob.Dispose();
+        dotJob.Src1.CopyFrom(data);
+        dotJob.Src2.CopyFrom(data);
+        dotJob.Schedule(data.Length, 2).Complete();
+        dotJob.Dst.CopyTo(data);
+        dotJob.Dispose();
         Assert.AreEqual(new float[] { 1, 4, 9, 16, 25 }, data);
     }
 
     [Test]
-    public void SerialCorrelation()
+    public void SerialPcc()
     {
         var x = new float[] { 1, 2, 3, 4, 5 };
         var y = new float[] { -1, -2, -3, -4, -5 };
-        Assert.AreEqual(1f, Baseline.Correlation(x, x));
-        Assert.AreEqual(-1f, Baseline.Correlation(x, y));
+        Assert.AreEqual(1f, Baseline.Pcc(x, x));
+        Assert.AreEqual(-1f, Baseline.Pcc(x, y));
     }
 
     [Test]
-    public void ParallelCorrelation()
+    public void ParallelPcc()
     {
         var x = new float[] { 1, 2, 3, 4, 5 };
         var y = new float[] { -1, -2, -3, -4, -5 };
-        var correlationJob = new CorrelationJob()
+        var pccJob = new PccJob()
         {
             Allocator = Allocator.Persistent,
             Length = x.Length,
             Width = x.Length / 2
         };
-        correlationJob.Allocate();
-        correlationJob.X.CopyFrom(x);
-        correlationJob.Y.CopyFrom(x);
-        correlationJob.Schedule().Complete();
-        var valueXX = correlationJob.Result.Value;
-        correlationJob.Y.CopyFrom(y);
-        correlationJob.Schedule().Complete();
-        var valueXY = correlationJob.Result.Value;
-        correlationJob.Dispose();
-        Assert.AreEqual(1f, valueXX);
-        Assert.AreEqual(-1f, valueXY);
+        pccJob.Allocate();
+        pccJob.X.CopyFrom(x);
+        pccJob.Y.CopyFrom(x);
+        pccJob.Schedule().Complete();
+        var pccXX = pccJob.Result.Value;
+        pccJob.Y.CopyFrom(y);
+        pccJob.Schedule().Complete();
+        var pccYY = pccJob.Result.Value;
+        pccJob.Dispose();
+        Assert.AreEqual(1f, pccXX);
+        Assert.AreEqual(-1f, pccYY);
     }
 }

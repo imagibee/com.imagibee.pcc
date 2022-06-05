@@ -48,13 +48,13 @@ namespace Imagibee.Parallel {
                 (length > Dst.Length)) {
                 throw new ArgumentException();
             }
-            var segmentProdJob = new BatchProductJob
+            var batchProductJob = new BatchProductJob
             {
                 Src1 = Src1,
                 Src2 = Src2,
                 Dst = Dst
             };
-            return segmentProdJob.ScheduleBatch(length, width, deps);
+            return batchProductJob.ScheduleBatch(length, width, deps);
         }
 
         public void Dispose()
