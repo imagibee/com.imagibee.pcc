@@ -1,5 +1,5 @@
 {
-    "name": "Tests",
+    "name": "Imagibee.Parallel.Tests",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
@@ -9,7 +9,9 @@
         "Imagibee.Parallel"
     ],
     "includePlatforms": [],
-    "excludePlatforms": [],
+    "excludePlatforms": [
+        "iOS"
+    ],
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
