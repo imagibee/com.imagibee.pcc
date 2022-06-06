@@ -38,11 +38,17 @@ namespace Imagibee.Parallel
 
         [BurstCompile]
         struct MergePccJob : IJob {
+            [NativeDisableParallelForRestriction]
             public NativeArray<float> SumX;
+            [NativeDisableParallelForRestriction]
             public NativeArray<float> SumY;
+            [NativeDisableParallelForRestriction]
             public NativeArray<float> SumProdXY;
+            [NativeDisableParallelForRestriction]
             public NativeArray<float> SumProdXX;
+            [NativeDisableParallelForRestriction]
             public NativeArray<float> SumProdYY;
+            [WriteOnly]
             public NativeReference<float> Result;
             public int Length;
 
