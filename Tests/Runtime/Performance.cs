@@ -4,8 +4,8 @@ using Unity.Collections;
 using Imagibee.Parallel;
 
 public class Performance {
-    private readonly int[] LENGTHS = { 8192, 1000000 };
-    private readonly int[] WIDTHS = { 3000, 3000 };
+    private readonly int[] LENGTHS = { 1000, 10000, 1000000 };
+    private readonly int[] WIDTHS = { 1000, 3000, 3000 };
 
     [Test, Performance]
     public void SerialPcc()

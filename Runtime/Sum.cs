@@ -37,6 +37,7 @@ namespace Imagibee.Parallel {
         [BurstCompile]
         struct MergeSumJob : IJob
         {
+            [NativeDisableParallelForRestriction]
             public NativeArray<float> Data;
             public int Length;
             public int Width;

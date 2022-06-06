@@ -8,7 +8,7 @@ A Unity package supporting a variety of parallel computations.  The package incl
 ## Usage
 Here is a brief example that illustrates the usage.  Refer to `Runtime/Pcc.cs` to see how `SumJob` and `ProductJob` may be combined to form more complex computations.
 ```cs
-using Imagibee.Parallel
+using Imagibee.Parallel;
 
 var x = new float[] { 1, 2, 3, 4, 5 };
 var y = new float[] { -1, -2, -3, -4, -5 };
