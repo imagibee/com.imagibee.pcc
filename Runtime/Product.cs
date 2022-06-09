@@ -7,23 +7,23 @@ using System;
 namespace Imagibee.Parallel {
 
     [BurstCompile]
-    public struct ProductJob : IDisposable {
+    public struct ProductJob {
         private const int DEFAULT_WIDTH = 3000;
         [ReadOnly]
-        public NativeArray<float> Src1;
+        public NativeSlice<float> Src1;
         [ReadOnly]
-        public NativeArray<float> Src2;
+        public NativeSlice<float> Src2;
         [WriteOnly]
-        public NativeArray<float> Dst;
+        public NativeSlice<float> Dst;
 
         [BurstCompile]
-        public struct BatchProductJob : IJobParallelForBatch {
+        struct BatchProductJob : IJobParallelForBatch {
             [ReadOnly]
-            public NativeArray<float> Src1;
+            public NativeSlice<float> Src1;
             [ReadOnly]
-            public NativeArray<float> Src2;
+            public NativeSlice<float> Src2;
             [WriteOnly]
-            public NativeArray<float> Dst;
+            public NativeSlice<float> Dst;
             public void Execute(int startIndex, int count)
             {
                 for (var i = startIndex; i < startIndex + count; ++i) {
@@ -55,13 +55,6 @@ namespace Imagibee.Parallel {
                 Dst = Dst
             };
             return batchProductJob.ScheduleBatch(length, width, deps);
-        }
-
-        public void Dispose()
-        {
-            Src1.Dispose();
-            Src2.Dispose();
-            Dst.Dispose();
         }
     }
 }

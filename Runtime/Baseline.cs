@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Imagibee.Parallel {
     // Only intended to form a baseline for testing
-    public class Baseline {
+    public class Functions {
         // Returns the Pearson correlation coefficient of two arrays
         public static float Pcc(float[] x, float[] y)
         {
