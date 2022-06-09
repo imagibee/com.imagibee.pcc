@@ -16,7 +16,7 @@ public class Performance {
             var c = 0f;
             Measure.Method(() =>
             {
-                c = Baseline.Pcc(x, y);
+                c = Functions.Pcc(x, y);
             }).SampleGroup($"Serial Pcc (length={length})").Run();
         }
     }
@@ -40,16 +40,19 @@ public class Performance {
     public void ParallelSum()
     {
         for (var i = 0; i < LENGTHS.Length; ++i) {
+            var buf1 = new NativeArray<float>(LENGTHS[i], Allocator.TempJob);
+            var buf2 = new NativeReference<float>(Allocator.TempJob);
             var sumJob = new SumJob
             {
-                Src = new NativeArray<float>(LENGTHS[i], Allocator.TempJob),
-                Dst = new NativeArray<float>(LENGTHS[i], Allocator.TempJob),
+                Src = buf1,
+                Result = buf2
             };
             Measure.Method(() =>
             {
                 sumJob.Schedule(LENGTHS[i], WIDTHS[i]).Complete();
             }).SampleGroup($"Parallel sum (length={LENGTHS[i]}, width={WIDTHS[i]})").Run();
-            sumJob.Dispose();
+            buf1.Dispose();
+            buf2.Dispose();
         }
     }
 
@@ -57,45 +60,105 @@ public class Performance {
     public void ParallelProduct()
     {
         for (var i = 0; i < LENGTHS.Length; ++i) {
+            var buf1 = new NativeArray<float>(LENGTHS[i], Allocator.TempJob);
+            var buf2 = new NativeArray<float>(LENGTHS[i], Allocator.TempJob);
+            var buf3 = new NativeArray<float>(LENGTHS[i], Allocator.TempJob);
             var productJob = new ProductJob
             {
-                Src1 = new NativeArray<float>(LENGTHS[i], Allocator.TempJob),
-                Src2 = new NativeArray<float>(LENGTHS[i], Allocator.TempJob),
-                Dst = new NativeArray<float>(LENGTHS[i], Allocator.TempJob)
+                Src1 = buf1,
+                Src2 = buf2,
+                Dst = buf3
             };
             Measure.Method(() =>
             {
                 productJob.Schedule(LENGTHS[i], WIDTHS[i]).Complete();
             }).SampleGroup($"Parallel product (length={LENGTHS[i]}, width={WIDTHS[i]})").Run();
-            productJob.Dispose();
+            buf1.Dispose();
+            buf2.Dispose();
+            buf3.Dispose();
         }
     }
 
     [Test, Performance]
-    public void ParallelPcc()
+    public void ParallelPccv1()
     {
         for (var i = 0; i < LENGTHS.Length; ++i) {
-            var pccJob = new PccJob()
+            var pccJobv1 = new PccJobv1()
             {
                 Allocator = Allocator.Persistent,
                 Length = LENGTHS[i],
                 Width = WIDTHS[i]
             };
-            pccJob.Allocate();
+            pccJobv1.Allocate();
             Measure.Method(() =>
             {
-                pccJob.Schedule().Complete();
-            }).SampleGroup($"Parallel PCC (length={LENGTHS[i]}, width={WIDTHS[i]})").Run();
-            pccJob.Dispose();
+                pccJobv1.Schedule().Complete();
+            }).SampleGroup($"Parallel PCCv1 (length={LENGTHS[i]}, width={WIDTHS[i]})").Run();
+            pccJobv1.Dispose();
         }
     }
+
+    [Test, Performance]
+    public void ParallelPccv2Tiny()
+    {
+        var pccJobv2 = new PccJobv2();
+        pccJobv2.Allocate(1000, 1000);
+        Measure.Method(() =>
+        {
+            pccJobv2.Schedule().Complete();
+        }).SampleGroup($"Parallel PCCv2 (length=1000, ycount=1000)").Run();
+        pccJobv2.Dispose();
+    }
+
+    [Test, Performance]
+    public void ParallelPccv2Large()
+    {
+        var pccJobv2 = new PccJobv2();
+        pccJobv2.Allocate(1000000, 1);
+        Measure.Method(() =>
+        {
+            pccJobv2.Schedule().Complete();
+        }).SampleGroup($"Parallel PCCv2 (length=1000000, ycount=1)").Run();
+        pccJobv2.Dispose();
+    }
+
+    //[Test, Performance]
+    //public void ParallelPcc2()
+    //{
+    //    const int LENGTH = 1000;
+    //    const int NUMJOBS = 1000;
+    //    var X = new NativeArray<float>(LENGTH, Allocator.Persistent);
+    //    var pccJobs = new List<PccJob>();
+    //    var job = new JobHandle();
+    //    for (var i = 0; i < NUMJOBS; i++) {
+    //        var pccJob = new PccJob
+    //        {
+    //            Allocator = Allocator.Persistent,
+    //            Length = LENGTH,
+    //            Width = LENGTH
+    //        };
+    //        pccJob.Allocate(X);
+    //        pccJobs.Add(pccJob);
+    //    }
+    //    Measure.Method(() =>
+    //    {
+    //        for (var i = 0; i < NUMJOBS; i++) {
+    //            job = pccJobs[i].Schedule(job);
+    //        }
+    //        job.Complete();
+    //    }).SampleGroup($"Parallel PCC2 (length={LENGTH}, jobs={NUMJOBS})").Run();
+    //    for (var i = 0; i < NUMJOBS; i++) {
+    //        pccJobs[i].Dispose();
+    //    }
+    //    X.Dispose();
+    //}
 
     [Test, Performance]
     public void ParallelCopyFrom()
     {
         for (var i = 0; i < LENGTHS.Length; ++i) {
             var x = new float[LENGTHS[i]];
-            var pccJob = new PccJob()
+            var pccJob = new PccJobv1()
             {
                 Allocator = Allocator.Persistent,
                 Length = LENGTHS[i],
