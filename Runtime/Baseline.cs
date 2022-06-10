@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Imagibee.Parallel {
@@ -33,6 +34,22 @@ namespace Imagibee.Parallel {
                 sum += x[i] * y[i];
             }
             return sum;
+        }
+
+        public static List<float> Pccv5(float[] x, float[][] y)
+        {
+            var results = new List<float>();
+            var sumX = Sum(x);
+            var n = x.Length;
+            var xResult = Mathf.Sqrt(n * SumProd(x, x) - sumX * sumX);
+            for (var ycount = 0; ycount < y.Length; ++ycount) {
+                var sumY = Sum(y[ycount]);
+                results.Add(
+                    (n * SumProd(x, y[ycount]) - sumX * sumY) /
+                    xResult /
+                    Mathf.Sqrt(n * SumProd(y[ycount], y[ycount]) - sumY * sumY));
+            }
+            return results;
         }
     }
 }
