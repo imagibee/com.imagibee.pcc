@@ -93,4 +93,3 @@ Report and track issues [here](https://github.com/imagibee/com.imagibee.parallel
 
 ## Contributing
 Minor changes such as bug fixes are welcome.  Simply make a [pull request](https://opensource.com/article/19/7/create-pull-request-github).  Please discuss more significant changes prior to making the pull request by opening a new issue that describes the change.
-- 
