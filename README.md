@@ -1,9 +1,29 @@
 # com.imagibee.parallel
-A Unity package that implements a variety of parallel algorithms.  The package includes:
+A Unity package that implements a variety of parallel algorithms.  The goal of these algorithms is to enable performance improvements of targeted areas of an application.  The package includes:
 
 * __PccJob__ - computes the [Pearson correlation coefficient](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient) of two arrays
 * __SumJob__ - computes the sum of the elements of an array
 * __ProductJob__ - computes the element-wise product of two arrays
+
+## Performance
+A 128 x improvement was achieved for the _Pcc tiny_ use case.  See _Performance_ tests for details. Performance measurements made with Burst safety checks, leak detection, and debugger all turned off.
+
+| _Use case_  | _Length_  | _YCount_  | _Time [us]_  |
+|:----------|:----------|:----------|:----------|
+| Pcc baseline tiny    | 1,000    | 1,000    | 22,130    |
+| Pcc baseline large    | 1,000,000    | 1    | 36,660    |
+| Pcc parallel tiny    | 1,000    | 1,000    | 173   |
+| Pcc large    | 1,000,000    | 1    | 1,880    |
+
+The hardware used to measure performance was a Macbook Pro:
+- 8-Core Intel Core i9
+- Processor Speed:	2.3 GHz
+- Number of Processors:	1
+- Total Number of Cores:	8
+- L2 Cache (per Core):	256 KB
+- L3 Cache:	16 MB
+- Hyper-Threading Technology:	Enabled
+- Memory:	16 GB
 
 ## Usage
 This example illustrates the usage of _PccJob_ with some annotation.  Refer to the tests for additional usage examples.
