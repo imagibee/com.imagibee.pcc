@@ -1,6 +1,6 @@
 {
   "name": "com.imagibee.parallel",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "displayName": "Imagibee Parallel",
   "description": "A variety of parallel processing routines",
   "documentationUrl": "https://github.com/imagibee/com.imagibee.parallel/blob/v0.0.1/README.md",
