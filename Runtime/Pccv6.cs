@@ -5,8 +5,7 @@ using Unity.Mathematics;
 using System;
 using UnityEngine;
 
-namespace Imagibee.Parallel
-{
+namespace Imagibee.Parallel {
     [BurstCompile(FloatMode = FloatMode.Fast, FloatPrecision = FloatPrecision.Low)]
     public struct PccJobv6 : IDisposable {
         public int Length;

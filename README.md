@@ -6,14 +6,14 @@ A Unity package that implements a variety of parallel algorithms.  The goal of t
 * __ProductJob__ - computes the element-wise product of two arrays
 
 ## Performance
-A 128 x improvement was achieved for the _Pcc tiny_ use case.  See _Performance_ tests for details. Performance measurements made with Burst safety checks, leak detection, and debugger all turned off.
+A 134 x improvement was achieved for the _Pcc tiny_ use case.  See _Performance_ tests for details. Performance measurements made with Burst safety checks, leak detection, and debugger all turned off.
 
 | _Performance test_  | _Length_  | _YCount_  | _Time [us]_  |
 |:----------|:----------|:----------|:----------|
 | SerialPccv5Tiny (baseline) | 1,000    | 1,000    | 22,130    |
 | SerialPccv5Large (baseline) | 1,000,000    | 1    | 36,660    |
-| ParallelPccv6Tiny | 1,000    | 1,000    | 173   |
-| ParallelPccv6Large | 1,000,000    | 1    | 1,880    |
+| ParallelPccv7Tiny | 1,000    | 1,000    | 165   |
+| ParallelPccv7Large | 1,000,000    | 1    | 1,880    |
 
 The hardware used to measure performance was a Macbook Pro:
 - 8-Core Intel Core i9
