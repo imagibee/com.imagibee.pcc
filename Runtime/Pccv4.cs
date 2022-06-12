@@ -5,10 +5,9 @@ using Unity.Mathematics;
 using System;
 using UnityEngine;
 
-namespace Imagibee.Parallel
-{
-    [BurstCompile(FloatMode = FloatMode.Fast, FloatPrecision = FloatPrecision.Low)]
-    public struct PccJobv6 : IDisposable {
+namespace Imagibee.Parallel {
+    [BurstCompile]
+    public struct PccJobv4 : IDisposable {
         public int Length;
         public int YCount;
         public NativeArray<float> X;
@@ -19,7 +18,7 @@ namespace Imagibee.Parallel
         public NativeArray<float> XYSumProd;
         public NativeArray<float> R;
 
-        [BurstCompile(FloatMode = FloatMode.Fast, FloatPrecision = FloatPrecision.Low)]
+        [BurstCompile]
         struct PccPartitionJobX : IJobParallelForBatch {
             public int YCount;
             public int Length;
@@ -41,7 +40,7 @@ namespace Imagibee.Parallel
             }
         }
 
-        [BurstCompile(FloatMode = FloatMode.Fast, FloatPrecision = FloatPrecision.Low)]
+        [BurstCompile]
         struct PccPartitionJobY : IJobParallelForBatch {
             public int YCount;
             public int Length;
@@ -73,7 +72,7 @@ namespace Imagibee.Parallel
             }
         }
 
-        [BurstCompile(FloatMode = FloatMode.Fast, FloatPrecision = FloatPrecision.Low)]
+        [BurstCompile]
         struct PccMergeJob : IJobParallelFor {
             public int Length;
             [ReadOnly]
@@ -96,8 +95,6 @@ namespace Imagibee.Parallel
                     (math.sqrt(Length * YYSumProd[i] - YSum[i] * YSum[i]));
             }
         }
-
-        [BurstCompile(FloatMode = FloatMode.Fast, FloatPrecision = FloatPrecision.Low)]
         public JobHandle Schedule(JobHandle deps = new JobHandle())
         {
             var jobs = new NativeList<JobHandle>(2, Allocator.TempJob);
