@@ -186,6 +186,35 @@ public class Performance {
         pccJob.Dispose();
     }
 
+    [Test, Performance]
+    public void ParallelPccv7Tiny()
+    {
+
+        var x = new float[TINY_LENGTH];
+        var pccJob = new PccJobv7();
+        pccJob.Allocate(TINY_LENGTH, TINY_YCOUNT);
+        Measure.Method(() =>
+        {
+            pccJob.X.CopyFrom(x);
+            pccJob.Schedule().Complete();
+        }).SampleGroup($"Parallel PCCv7 (length={TINY_LENGTH}, ycount={TINY_YCOUNT})").Run();
+        pccJob.Dispose();
+    }
+
+    [Test, Performance]
+    public void ParallelPccv7Large()
+    {
+        var x = new float[LARGE_LENGTH];
+        var pccJob = new PccJobv7();
+        pccJob.Allocate(LARGE_LENGTH, LARGE_YCOUNT);
+        Measure.Method(() =>
+        {
+            pccJob.X.CopyFrom(x);
+            pccJob.Schedule().Complete();
+        }).SampleGroup($"Parallel PCCv7 (length={LARGE_LENGTH}, ycount={LARGE_YCOUNT})").Run();
+        pccJob.Dispose();
+    }
+
     //[Test, Performance]
     //public void ParallelPcc2()
     //{

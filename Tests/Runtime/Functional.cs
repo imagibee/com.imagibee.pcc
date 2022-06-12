@@ -120,6 +120,26 @@ public class Functional
     }
 
     [Test]
+    public void ParallelPccv7()
+    {
+        var x = new float[] { 1, 2, 3, 4, 5 };
+        var y = new float[] { 1, 2, 3, 4, 5, -1, -2, -3, -4, -5 };
+        var results = new List<float>();
+        var pccJob = new PccJobv7();
+
+        pccJob.Allocate(x.Length, y.Length / x.Length);
+        pccJob.X.CopyFrom(x);
+        pccJob.Y.CopyFrom(y);
+        pccJob.Schedule().Complete();
+        for (var i = 0; i < y.Length / x.Length; ++i) {
+            results.Add(pccJob.R[i]);
+        }
+        pccJob.Dispose();
+        Assert.AreEqual(1f, results[0]);
+        Assert.AreEqual(-1f, results[1]);
+    }
+
+    [Test]
     public void SerialPccv5()
     {
         var x = new float[] { 1, 2, 3, 4, 5 };
