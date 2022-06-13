@@ -4,18 +4,6 @@ using UnityEngine;
 namespace Imagibee.Parallel {
     // Only intended to form a baseline for testing
     public class Functions {
-        // Returns the Pearson correlation coefficient of two arrays
-        public static float Pcc(float[] x, float[] y)
-        {
-            var sumX = Sum(x);
-            var sumY = Sum(y);
-            var n = x.Length;
-            return
-                (n * SumProd(x, y) - sumX * sumY) /
-                Mathf.Sqrt(n * SumProd(x, x) - sumX * sumX) /
-                Mathf.Sqrt(n * SumProd(y, y) - sumY * sumY);
-        }
-
         // Returns the sum of the array
         public static float Sum(float[] x)
         {
@@ -36,7 +24,8 @@ namespace Imagibee.Parallel {
             return sum;
         }
 
-        public static List<float> Pccv5(float[] x, float[][] y)
+        // Returns the Pearson correlation coefficient x with each y
+        public static List<float> Pcc(float[] x, float[][] y)
         {
             var results = new List<float>();
             var sumX = Sum(x);
