@@ -1,19 +1,17 @@
 # com.imagibee.parallel
-A Unity package that implements a variety of parallel algorithms.  The goal of these algorithms is to enable performance improvements of targeted areas of an application.  The package includes:
+A Unity package that implements a parallelized PCC algorithm.  The goal of this algorithm is to enable performance improvements of applications that need to compute many correlations.  The package includes:
 
 * __PccJob__ - computes the [Pearson correlation coefficient](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient) of two arrays
-* __SumJob__ - computes the sum of the elements of an array
-* __ProductJob__ - computes the element-wise product of two arrays
 
 ## Performance
-A 134 x improvement was achieved for the _Pcc tiny_ use case.  See _Performance_ tests for details. Performance measurements made with Burst safety checks, leak detection, and debugger all turned off.
+A 134 x improvement was achieved for the _Pcc tiny_ test case.  See _Performance_ tests for details. Performance measurements made with Burst safety checks, leak detection, and debugger all turned off.
 
 | _Performance test_  | _Length_  | _YCount_  | _Time [us]_  |
 |:----------|:----------|:----------|:----------|
-| SerialPccv5Tiny (baseline) | 1,000    | 1,000    | 22,130    |
-| SerialPccv5Large (baseline) | 1,000,000    | 1    | 36,660    |
-| ParallelPccv7Tiny | 1,000    | 1,000    | 165   |
-| ParallelPccv7Large | 1,000,000    | 1    | 1,880    |
+| SerialPccTiny (baseline) | 1,000    | 1,000    | 22,130    |
+| SerialPccLarge (baseline) | 1,000,000    | 1    | 36,660    |
+| ParallelPccTiny | 1,000    | 1,000    | 165   |
+| ParallelPccLarge | 1,000,000    | 1    | 1,880    |
 
 The hardware used to measure performance was a Macbook Pro:
 - 8-Core Intel Core i9
@@ -26,7 +24,7 @@ The hardware used to measure performance was a Macbook Pro:
 - Memory:	16 GB
 
 ## Usage
-This example illustrates the usage of _PccJob_ with some annotation.  Refer to the tests for additional usage examples.
+This example illustrates the usage of _PccJob_ with some annotation.
 ```cs
 using Imagibee.Parallel;
 
@@ -35,7 +33,7 @@ using Imagibee.Parallel;
 var x = new List<float[]>
 {
     new float[] { 1, 2, 3, 4, 5 },
-    new float[] { 1, 2, 3, 4, 5 }
+    new float[] { 2, 4, 6, 8, 10 }
 };
 // There can be 1 or more y, concatenated together, the
 // length of each y must match the length of x.  Here we

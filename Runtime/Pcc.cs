@@ -7,12 +7,13 @@ using UnityEngine;
 
 namespace Imagibee.Parallel {
     [BurstCompile(FloatMode = FloatMode.Fast, FloatPrecision = FloatPrecision.Low)]
-    public struct PccJobv6 : IDisposable {
+    public struct PccJob : IDisposable {
         public int Length;
         public int YCount;
         public NativeArray<float> X;
         public NativeArray<float> Y;
-        public NativeArray<float> XResults;
+        public NativeReference<float> XSum;
+        public NativeReference<float> XResult; // sqrt(Length*XXSumProd - XSum*XSum) 
         public NativeArray<float> YSum;
         public NativeArray<float> YYSumProd;
         public NativeArray<float> XYSumProd;
@@ -25,7 +26,9 @@ namespace Imagibee.Parallel {
             [ReadOnly]
             public NativeArray<float> X;
             [WriteOnly, NativeDisableParallelForRestriction]
-            public NativeArray<float> XResults; // 0: XSum, 1: sqrt(Length*XXSumProd - XSum*XSum) 
+            public NativeReference<float> XSum;
+            [WriteOnly, NativeDisableParallelForRestriction]
+            public NativeReference<float> XResult; // sqrt(Length*XXSumProd - XSum*XSum) 
 
             public void Execute(int startIndex, int count)
             {
@@ -35,8 +38,8 @@ namespace Imagibee.Parallel {
                     sum += X[i];
                     sumProd += X[i] * X[i];
                 }
-                XResults[0] = sum;
-                XResults[1] = math.sqrt(Length * sumProd - sum * sum);
+                XSum.Value = sum;
+                XResult.Value = math.sqrt(Length * sumProd - sum * sum);
             }
         }
 
@@ -73,10 +76,12 @@ namespace Imagibee.Parallel {
         }
 
         [BurstCompile(FloatMode = FloatMode.Fast, FloatPrecision = FloatPrecision.Low)]
-        struct PccMergeJob : IJobParallelFor {
+        struct PccMergeJob : IJobParallelForBatch {
             public int Length;
             [ReadOnly]
-            public NativeArray<float> XResults;
+            public NativeReference<float> XSum;
+            [ReadOnly]
+            public NativeReference<float> XResult; // sqrt(Length*XXSumProd - XSum*XSum) 
             [ReadOnly]
             public NativeArray<float> YSum;
             [ReadOnly]
@@ -86,13 +91,15 @@ namespace Imagibee.Parallel {
             [WriteOnly, NativeDisableParallelForRestriction]
             public NativeArray<float> R;
 
-            public void Execute(int i)
+            public void Execute(int startIndex, int count)
             {
-                //Debug.Log($"i={i}, XSum={XResults[0]}, XResult={XResults[1]}, YSum={YSum[i]}, YYSUmProd={YYSumProd[0]}, XYSumProd={XYSumProd[i]}");
-                R[i] =
-                    (Length * XYSumProd[i] - XResults[0] * YSum[i]) /
-                    XResults[1] /
-                    (math.sqrt(Length * YYSumProd[i] - YSum[i] * YSum[i]));
+                for (int i = startIndex; i < startIndex + count; ++i) {
+                    //Debug.Log($"i={i}, XSum={XResults[0]}, XResult={XResults[1]}, YSum={YSum[i]}, YYSUmProd={YYSumProd[0]}, XYSumProd={XYSumProd[i]}");
+                    R[i] =
+                        (Length * XYSumProd[i] - XSum.Value * YSum[i]) /
+                        XResult.Value /
+                        (math.sqrt(Length * YYSumProd[i] - YSum[i] * YSum[i]));
+                }
             }
         }
 
@@ -105,7 +112,8 @@ namespace Imagibee.Parallel {
                 Length = Length,
                 YCount = 1,
                 X = X,
-                XResults = XResults
+                XSum = XSum,
+                XResult = XResult
             };
             jobs.Add(xPartitionJob.ScheduleBatch(Length, Length, deps));
 
@@ -124,13 +132,14 @@ namespace Imagibee.Parallel {
             var mergeJob = new PccMergeJob
             {
                 Length = Length,
-                XResults = XResults,
+                XSum = XSum,
+                XResult = XResult,
                 YSum = YSum,
                 YYSumProd = YYSumProd,
                 XYSumProd = XYSumProd,
                 R = R
             };
-            var newDeps = mergeJob.Schedule(YCount, 1, JobHandle.CombineDependencies(jobs));
+            var newDeps = mergeJob.ScheduleBatch(YCount, 4, JobHandle.CombineDependencies(jobs));
             jobs.Dispose();
             return newDeps;
         }
@@ -141,7 +150,8 @@ namespace Imagibee.Parallel {
             YCount = ycount;
             X = new NativeArray<float>(Length, allocator);
             Y = new NativeArray<float>(Length * YCount, allocator);
-            XResults = new NativeArray<float>(2, allocator);
+            XSum = new NativeReference<float>(allocator);
+            XResult = new NativeReference<float>(allocator);
             YSum = new NativeArray<float>(YCount, allocator);
             YYSumProd = new NativeArray<float>(YCount, allocator);
             XYSumProd = new NativeArray<float>(YCount, allocator);
@@ -152,7 +162,8 @@ namespace Imagibee.Parallel {
         {
             X.Dispose();
             Y.Dispose();
-            XResults.Dispose();
+            XSum.Dispose();
+            XResult.Dispose();
             YSum.Dispose();
             YYSumProd.Dispose();
             XYSumProd.Dispose();
