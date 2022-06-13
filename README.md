@@ -47,7 +47,7 @@ var length = x[0].Length;
 var ycount = y.Length / length;
 
 // Create a correlation job
-var pccJob = new PccJobv6();
+var pccJob = new PccJob();
 
 // Allocate the native containers for the job
 pccJob.Allocate(length, ycount, Allocator.Persistent);
