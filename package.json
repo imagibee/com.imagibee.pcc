@@ -1,8 +1,8 @@
 {
   "name": "com.imagibee.parallel",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "displayName": "Imagibee Parallel",
-  "description": "A variety of parallel processing routines",
+  "description": "A parallelized Pearson Correlation Coefficient algorithm",
   "documentationUrl": "https://github.com/imagibee/com.imagibee.parallel/blob/v0.0.1/README.md",
   "licensesUrl": "https://github.com/imagibee/com.imagibee.parallel/blob/v0.0.1/LICENSE",
   "unity": "2020.3",

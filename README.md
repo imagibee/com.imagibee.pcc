@@ -1,17 +1,27 @@
 # com.imagibee.parallel
-A Unity package that implements a parallelized PCC algorithm.  The goal of this algorithm is to enable performance improvements of applications that need to compute many correlations.  The package includes:
+A Unity package that implements a parallelized [Pearson Correlation Coefficient](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient) (PCC) algorithm.  The goal of this algorithm is to enable performance improvements of applications that need to compute many correlations.  The package includes:
 
-* __PccJob__ - computes the [Pearson correlation coefficient](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient) of two arrays
+* __PccJob__ - computes the PCC of two arrays
 
 ## Performance
-A 134 x improvement was achieved for the _Pcc tiny_ test case.  See _Performance_ tests for details. Performance measurements made with Burst safety checks, leak detection, and debugger all turned off.
+Performance stays above x90 (ie. ninety times faster than baseline) for array lengths betwee 100 and 100,000.  At a length of 10,000 a x139 improvement was achieved.  See _Performance_ tests for details. Performance measurements made with Burst safety checks, leak detection, and debugger all turned off.
 
-| _Performance test_  | _Length_  | _YCount_  | _Time [us]_  |
-|:----------|:----------|:----------|:----------|
-| SerialPccTiny (baseline) | 1,000    | 1,000    | 22,130    |
-| SerialPccLarge (baseline) | 1,000,000    | 1    | 36,660    |
-| ParallelPccTiny | 1,000    | 1,000    | 165   |
-| ParallelPccLarge | 1,000,000    | 1    | 1,880    |
+| _Performance test_  | _Length_  | _YCount_ | _Time [us]_ | _Improvement_
+|:--------------------|:----------|:---------|:------------|:-------------
+| SerialPcc           | 10        | 100,000  | 30,500      | baseline
+| SerialPcc           | 100       | 10,000   | 22,900      | baseline
+| SerialPcc           | 1,000     | 1,000    | 22,100      | baseline
+| SerialPcc           | 10,0000   | 100      | 22,200      | baseline
+| SerialPcc           | 20,0000   | 50       | 22,300      | baseline
+| SerialPcc           | 100,000   | 10       | 23,500      | baseline
+| SerialPcc           | 1,000,000 | 1        | 36,700      | baseline
+| ParallelPcc         | 10        | 100,000  | 956         | x 32
+| ParallelPcc         | 100       | 10,000   | 252         | x 91
+| ParallelPcc         | 1,000     | 1,000    | 165         | x 134
+| **ParallelPcc**     | **10,000**| **100**  | **160**     | **x 139**
+| ParallelPcc         | 20,000    | 50       | 175         | x 127
+| ParallelPcc         | 100,000   | 10       | 244         | x 96
+| ParallelPcc         | 1,000,000 | 1        | 1,875       | x 20
 
 The hardware used to measure performance was a Macbook Pro:
 - 8-Core Intel Core i9
