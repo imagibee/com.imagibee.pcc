@@ -13,7 +13,6 @@ public class Functional
         var y = new float[] { 1, 2, 3, 4, 5, -1, -2, -3, -4, -5 };
         var results = new List<float>();
         var pccJob = new PccJob();
-
         pccJob.Allocate(x.Length, y.Length / x.Length);
         pccJob.X.CopyFrom(x);
         pccJob.Y.CopyFrom(y);
@@ -22,24 +21,66 @@ public class Functional
             results.Add(pccJob.R[i]);
         }
         pccJob.Dispose();
-        Assert.AreEqual(1f, results[0]);
-        Assert.AreEqual(-1f, results[1]);
+        Assert.AreEqual(results[0], 1f);
+        Assert.AreEqual(results[1], -1f);
     }
 
     [Test]
-    public void SerialPccv()
+    public void SerialPcc()
     {
         var x = new float[] { 1, 2, 3, 4, 5 };
         var y = new float[2][];
         y[0] = new float[] { 1, 2, 3, 4, 5 };
         y[1] = new float[] { -1, -2, -3, -4, -5 };
         var results = Functions.Pcc(x, y);
-        Assert.AreEqual(1f, results[0]);
-        Assert.AreEqual(-1f, results[1]);
+        Assert.AreEqual(results[0], 1f);
+        Assert.AreEqual(results[1], -1f);
     }
 
     [Test]
-    public void PccJobUsage()
+    public void ParallelPccDivideByZero()
+    {
+        var x = new float[] { 1, 1, 1, 1, 1 };
+        var y = new float[] { 1, 2, 3, 4, 5, -1, -2, -3, -4, -5 };
+        var results = new List<float>();
+        var pccJob = new PccJob();
+        pccJob.Allocate(x.Length, y.Length / x.Length);
+        pccJob.X.CopyFrom(x);
+        pccJob.Y.CopyFrom(y);
+        pccJob.Schedule().Complete();
+        for (var i = 0; i < y.Length / x.Length; ++i) {
+            results.Add(pccJob.R[i]);
+        }
+        pccJob.Dispose();
+        Assert.IsNaN(results[0]);
+        Assert.IsNaN(results[1]);
+    }
+
+    [Test]
+    public void ParallelPccRandom()
+    {
+        var random = new System.Random();
+        const int LENGTH = 1000;
+        var x = new float[LENGTH];
+        var y = new float[LENGTH];
+        for (var i=0; i<LENGTH; ++i) {
+            x[i] = (float)random.NextDouble();
+            y[i] = (float)random.NextDouble();
+        }
+        var pccJob = new PccJob();
+        pccJob.Allocate(x.Length, y.Length / x.Length);
+        pccJob.X.CopyFrom(x);
+        pccJob.Y.CopyFrom(y);
+        pccJob.Schedule().Complete();
+        var result = pccJob.R[0];
+        Debug.Log($"correlation is {result}");
+        pccJob.Dispose();
+        Assert.LessOrEqual(result, 1f);
+        Assert.GreaterOrEqual(result, -1f);
+    }
+
+    [Test]
+    public void ParallelPccUsage()
     {
         // Here x represents a frequently changing value that is
         // correlated against a set of infrequently changing y.
