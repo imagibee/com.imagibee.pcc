@@ -4,7 +4,7 @@ A Unity package that implements a parallelized [Pearson Correlation Coefficient]
 * __PccJob__ - computes the PCC of two arrays
 
 ## Performance
-Performance stays above x90 (ie. ninety times faster than baseline) for array lengths betwee 100 and 100,000.  At a length of 10,000 a x139 improvement was achieved.  See _Performance_ tests for details. Performance measurements made with Burst safety checks, leak detection, and debugger all turned off.
+Performance stays above x90 (ie. ninety times faster than baseline) for array lengths between 100 and 100,000.  At a length of 10,000 a x139 improvement was achieved.  See _Performance_ tests for details. Performance measurements were made with Burst Compiler's safety checks, leak detection, and debugger all turned off.
 
 | _Performance test_  | _Length_  | _YCount_ | _Time [us]_ | _Improvement_
 |:--------------------|:----------|:---------|:------------|:-------------
