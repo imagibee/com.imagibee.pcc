@@ -4,7 +4,22 @@ using Imagibee.Parallel;
 
 public class Performance {
     readonly int[] LENGTHS = { 10, 100, 1000, 10000, 20000, 100000, 1000000 };
-    readonly int[] YCOUNTS = { 100000, 10000, 1000, 100,   50,    10,     1};
+    readonly int[] YCOUNTS = { 100000, 10000, 1000, 100, 50, 10, 1 };
+
+    [Test, Performance]
+    public void SerialPccOriginal()
+    {
+        const int LENGTH = 1000;
+        const int YCOUNT = 1000;
+        var x = new float[LENGTH];
+        var y = new float[LENGTH];
+        Measure.Method(() =>
+        {
+            for (var i = 0; i < YCOUNT; ++i) {
+                var r = Functions.Pcc(x, y);
+            }
+        }).SampleGroup($"Serial Pcc Original (length={LENGTH}, ycount={YCOUNT})").Run();
+    }
 
     [Test, Performance]
     public void SerialPcc()
