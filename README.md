@@ -18,18 +18,7 @@ The performance improvement for the Mac IL2CPP configuration stayed above x20 fo
 
 The performance improvement for the iOS configuration stayed above x6 (ie. six times faster than baseline) for array lengths between 100 and 100,000.  At a length of 10,000 a x8.4 improvement was measured.  I was a little suprised to see the iOS baseline outperform the Mac IL2CPP baseline by about 30%.
 
-#### iOS Baseline
-```shell
-Baseline Pcc (length=10, ycount=100000) Millisecond Median:2.58 Min:2.58 Max:2.61 Avg:2.59 Std:0.01 SampleCount: 9 Sum: 23.31
-Baseline Pcc (length=100, ycount=10000) Millisecond Median:2.40 Min:2.39 Max:2.42 Avg:2.40 Std:0.01 SampleCount: 9 Sum: 21.60
-Baseline Pcc (length=1000, ycount=1000) Millisecond Median:2.96 Min:2.96 Max:2.97 Avg:2.97 Std:0.00 SampleCount: 9 Sum: 26.69
-Baseline Pcc (length=10000, ycount=100) Millisecond Median:3.03 Min:3.03 Max:3.05 Avg:3.03 Std:0.01 SampleCount: 9 Sum: 27.29
-Baseline Pcc (length=20000, ycount=50) Millisecond Median:3.06 Min:3.06 Max:3.07 Avg:3.06 Std:0.00 SampleCount: 9 Sum: 27.57
-Baseline Pcc (length=100000, ycount=10) Millisecond Median:3.22 Min:3.21 Max:3.23 Avg:3.22 Std:0.00 SampleCount: 9 Sum: 28.98
-Baseline Pcc (length=1000000, ycount=1) Millisecond Median:5.05 Min:5.03 Max:5.06 Avg:5.05 Std:0.01 SampleCount: 9 Sum: 45.41
-```
-
-#### Mac Baseline (Mono)
+### Mac Baseline (Mono)
 ```shell
 Baseline Pcc (length=10, ycount=100000) Millisecond Median:31.29 Min:31.18 Max:31.59 Avg:31.30 Std:0.11 SampleCount: 9 Sum: 281.73
 Baseline Pcc (length=100, ycount=10000) Millisecond Median:23.03 Min:22.94 Max:23.26 Avg:23.07 Std:0.10 SampleCount: 9 Sum: 207.64
@@ -39,7 +28,7 @@ Baseline Pcc (length=20000, ycount=50) Millisecond Median:22.34 Min:22.31 Max:22
 Baseline Pcc (length=100000, ycount=10) Millisecond Median:23.48 Min:23.46 Max:23.52 Avg:23.49 Std:0.02 SampleCount: 9 Sum: 211.40
 Baseline Pcc (length=1000000, ycount=1) Millisecond Median:36.72 Min:36.68 Max:36.81 Avg:36.73 Std:0.05 SampleCount: 9 Sum: 330.59
 ```
-#### Mac Baseline (IL2CPP)
+### Mac Baseline (IL2CPP)
 ```shell
 Baseline Pcc (length=10, ycount=100000) Millisecond Median:3.06 Min:3.02 Max:3.15 Avg:3.07 Std:0.04 SampleCount: 9 Sum: 27.67
 Baseline Pcc (length=100, ycount=10000) Millisecond Median:3.33 Min:3.32 Max:3.46 Avg:3.35 Std:0.05 SampleCount: 9 Sum: 30.18
@@ -49,7 +38,7 @@ Baseline Pcc (length=20000, ycount=50) Millisecond Median:4.70 Min:4.69 Max:4.71
 Baseline Pcc (length=100000, ycount=10) Millisecond Median:4.95 Min:4.94 Max:5.72 Avg:5.03 Std:0.24 SampleCount: 9 Sum: 45.29
 Baseline Pcc (length=1000000, ycount=1) Millisecond Median:7.74 Min:7.73 Max:7.76 Avg:7.74 Std:0.01 SampleCount: 9 Sum: 69.64
 ```
-#### iOS Baseline
+### iOS Baseline
 ```shell
 Baseline Pcc (length=10, ycount=100000) Millisecond Median:2.58 Min:2.58 Max:2.61 Avg:2.59 Std:0.01 SampleCount: 9 Sum: 23.31
 Baseline Pcc (length=100, ycount=10000) Millisecond Median:2.40 Min:2.39 Max:2.42 Avg:2.40 Std:0.01 SampleCount: 9 Sum: 21.60
@@ -59,7 +48,7 @@ Baseline Pcc (length=20000, ycount=50) Millisecond Median:3.06 Min:3.06 Max:3.07
 Baseline Pcc (length=100000, ycount=10) Millisecond Median:3.22 Min:3.21 Max:3.23 Avg:3.22 Std:0.00 SampleCount: 9 Sum: 28.98
 Baseline Pcc (length=1000000, ycount=1) Millisecond Median:5.05 Min:5.03 Max:5.06 Avg:5.05 Std:0.01 SampleCount: 9 Sum: 45.41
 ```
-#### Mac Optimized
+### Mac Optimized
 ```shell
 Optimized PCC (length=10, ycount=100000) Millisecond Median:1.07 Min:1.05 Max:1.09 Avg:1.07 Std:0.01 SampleCount: 9 Sum: 9.64
 Optimized PCC (length=100, ycount=10000) Millisecond Median:0.25 Min:0.25 Max:0.27 Avg:0.25 Std:0.00 SampleCount: 9 Sum: 2.27
@@ -69,7 +58,7 @@ Optimized PCC (length=20000, ycount=50) Millisecond Median:0.17 Min:0.16 Max:0.1
 Optimized PCC (length=100000, ycount=10) Millisecond Median:0.26 Min:0.25 Max:0.26 Avg:0.26 Std:0.00 SampleCount: 9 Sum: 2.33
 Optimized PCC (length=1000000, ycount=1) Millisecond Median:1.95 Min:1.94 Max:1.99 Avg:1.96 Std:0.02 SampleCount: 9 Sum: 17.60
 ```
-#### iOS Optimized
+### iOS Optimized
 ```shell
 Optimized PCC (length=10, ycount=100000) Millisecond Median:0.93 Min:0.91 Max:0.95 Avg:0.93 Std:0.01 SampleCount: 9 Sum: 8.39
 Optimized PCC (length=100, ycount=10000) Millisecond Median:0.39 Min:0.38 Max:0.40 Avg:0.39 Std:0.00 SampleCount: 9 Sum: 3.51
@@ -81,20 +70,17 @@ Optimized PCC (length=1000000, ycount=1) Millisecond Median:1.29 Min:1.29 Max:1.
 ```
 
 ### Hardware used
-The hardware used to measure performance for Mac:
+The hardware used to measure performance for Mac was a Macbook Pro
 - 8-Core Intel Core i9
-- Processor Speed:	2.3 GHz
-- Number of Processors:	1
-- Total Number of Cores:	8
 - L2 Cache (per Core):	256 KB
 - L3 Cache:	16 MB
-- Hyper-Threading Technology:	Enabled
 - Memory:	16 GB
 
-The hardware used to measure performance for iOS:
-- iPhone 12 (model MGKQ3LL/A)
-
-
+The hardware used to measure performance for iOS was iPhone 12 Pro
+- 6-Core ARMv8
+- L2 Cache (per Core): 4 or 8 MB
+- L3 Cache: 16 MB
+- Memory:    6 GB
 ## Usage
 This example illustrates the usage of _PccJob_ with some annotation.
 ```cs
