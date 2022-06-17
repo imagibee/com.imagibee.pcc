@@ -24,7 +24,7 @@ namespace Imagibee.Parallel {
             return sum;
         }
 
-        // Returns the Pearson correlation coefficient x with each y
+        // Returns the Pearson correlation coefficient x with 1 or more y
         public static List<float> Pcc(float[] x, float[][] y)
         {
             var results = new List<float>();
@@ -39,6 +39,18 @@ namespace Imagibee.Parallel {
                     Mathf.Sqrt(n * SumProd(y[ycount], y[ycount]) - sumY * sumY));
             }
             return results;
+        }
+
+        // Returns the Pearson correlation coefficient of two arrays
+        public static float Pcc(float[] x, float[] y)
+        {
+            var sumX = Sum(x);
+            var sumY = Sum(y);
+            var n = x.Length;
+            return
+                (n * SumProd(x, y) - sumX * sumY) /
+                Mathf.Sqrt(n * SumProd(x, x) - sumX * sumX) /
+                Mathf.Sqrt(n * SumProd(y, y) - sumY * sumY);
         }
     }
 }
