@@ -7,7 +7,7 @@ public class Performance {
     readonly int[] YCOUNTS = { 100000, 10000, 1000, 100, 50, 10, 1 };
 
     [Test, Performance]
-    public void SerialPccOriginal()
+    public void BaselinePccOriginal()
     {
         const int LENGTH = 1000;
         const int YCOUNT = 1000;
@@ -18,11 +18,11 @@ public class Performance {
             for (var i = 0; i < YCOUNT; ++i) {
                 var r = Functions.Pcc(x, y);
             }
-        }).SampleGroup($"Serial Pcc Original (length={LENGTH}, ycount={YCOUNT})").Run();
+        }).SampleGroup($"Baseline Pcc Original (length={LENGTH}, ycount={YCOUNT})").Run();
     }
 
     [Test, Performance]
-    public void SerialPcc()
+    public void BaselinePcc()
     {
         for (int k = 0; k < LENGTHS.Length; ++k) {
             var x = new float[LENGTHS[k]];
@@ -33,12 +33,12 @@ public class Performance {
             Measure.Method(() =>
             {
                 var r = Functions.Pcc(x, y);
-            }).SampleGroup($"Serial Pcc (length={LENGTHS[k]}, ycount={YCOUNTS[k]})").Run();
+            }).SampleGroup($"Baseline Pcc (length={LENGTHS[k]}, ycount={YCOUNTS[k]})").Run();
         }
     }
 
     [Test, Performance]
-    public void ParallelPcc()
+    public void OptimizedPcc()
     {
         for (int k = 0; k < LENGTHS.Length; ++k) {
             var x = new float[LENGTHS[k]];
@@ -48,7 +48,7 @@ public class Performance {
             {
                 pccJob.X.CopyFrom(x);
                 pccJob.Schedule().Complete();
-            }).SampleGroup($"Parallel PCC (length={LENGTHS[k]}, ycount={YCOUNTS[k]})").Run();
+            }).SampleGroup($"Optimized PCC (length={LENGTHS[k]}, ycount={YCOUNTS[k]})").Run();
             pccJob.Dispose();
         }
     }
