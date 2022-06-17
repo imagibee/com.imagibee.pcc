@@ -1,57 +1,83 @@
 # com.imagibee.parallel
-A Unity package that implements a parallelized [Pearson Correlation Coefficient](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient) (PCC) algorithm.  The goal of this algorithm is to enable performance improvements of applications that need to compute many correlations.  The package includes:
+A Unity package that implements a parallelized [Pearson Correlation Coefficient](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient) (PCC) algorithm.  The problem being solved by this package is performance improvements for applications that need to compute many correlations.  The package includes:
 
-* __PccJob__ - computes the PCC of two arrays
+* __PccJob__ - computes the PCC of a given array vs 1 or more reference arrays
 
 ## Performance
-The performance improvement is better on Mac which is to be expected.  What is unexpected is that the baseline runs quite a bit faster on iOS than on the Mac.  This result is still being investigated, but fwiw, here are the numbers I'm currently getting.
+The performance improvement for three tested configurations is summarized in the table below.  See _Performance_ tests for details. Performance measurements were made with the Burst Compiler's safety checks, leak detection, and debugger all turned off.
 
-### Performance on Mac
-On the mac used for testing the performance stays above x90 (ie. ninety times faster than baseline) for array lengths between 100 and 100,000.  At a length of 10,000 a x139 improvement was achieved.  See _Performance_ tests for details. Performance measurements were made with Burst Compiler's safety checks, leak detection, and debugger all turned off.
+| Configuration | Peak Improvement | Typical Improvement
+|:--------------|:-----------------|:-------------------
+| Mac Mono      | x140             | x90
+| Mac IL2CPP    | x31              | x20
+| iOS           | x8.4             | x6
 
-#### Baseline
+The performance improvement for the Mac Mono configuration stayed above x90 (ie. ninety times faster than baseline) for array lengths between 100 and 100,000.  At a length of 10,000 a x140 improvement was measured.  Of the configurations tested Mac Mono benefitted most.  This result matches expectations since the Mono baseline is inherently slower than IL2CPP.
+
+The performance improvement for the Mac IL2CPP configuration stayed above x20 for array lengths between 1000 and 100,000.  At a length of 10,000 a peak of x31 improvement was measured.  
+
+The performance improvement for the iOS configuration stayed above x6 (ie. six times faster than baseline) for array lengths between 100 and 100,000.  At a length of 10,000 a x8.4 improvement was measured.  I was a little suprised to see the iOS baseline outperform the Mac IL2CPP baseline by about 30%.
+
+#### iOS Baseline
 ```shell
-Serial Pcc (length=10, ycount=100000) Millisecond Median:31.29 Min:31.18 Max:31.59 Avg:31.30 Std:0.11 SampleCount: 9 Sum: 281.73
-Serial Pcc (length=100, ycount=10000) Millisecond Median:23.03 Min:22.94 Max:23.26 Avg:23.07 Std:0.10 SampleCount: 9 Sum: 207.64
-Serial Pcc (length=1000, ycount=1000) Millisecond Median:22.13 Min:22.11 Max:22.23 Avg:22.14 Std:0.04 SampleCount: 9 Sum: 199.23
-Serial Pcc (length=10000, ycount=100) Millisecond Median:22.17 Min:22.15 Max:22.21 Avg:22.17 Std:0.02 SampleCount: 9 Sum: 199.56
-Serial Pcc (length=20000, ycount=50) Millisecond Median:22.34 Min:22.31 Max:22.43 Avg:22.34 Std:0.03 SampleCount: 9 Sum: 201.08
-Serial Pcc (length=100000, ycount=10) Millisecond Median:23.48 Min:23.46 Max:23.52 Avg:23.49 Std:0.02 SampleCount: 9 Sum: 211.40
-Serial Pcc (length=1000000, ycount=1) Millisecond Median:36.72 Min:36.68 Max:36.81 Avg:36.73 Std:0.05 SampleCount: 9 Sum: 330.59
+Baseline Pcc (length=10, ycount=100000) Millisecond Median:2.58 Min:2.58 Max:2.61 Avg:2.59 Std:0.01 SampleCount: 9 Sum: 23.31
+Baseline Pcc (length=100, ycount=10000) Millisecond Median:2.40 Min:2.39 Max:2.42 Avg:2.40 Std:0.01 SampleCount: 9 Sum: 21.60
+Baseline Pcc (length=1000, ycount=1000) Millisecond Median:2.96 Min:2.96 Max:2.97 Avg:2.97 Std:0.00 SampleCount: 9 Sum: 26.69
+Baseline Pcc (length=10000, ycount=100) Millisecond Median:3.03 Min:3.03 Max:3.05 Avg:3.03 Std:0.01 SampleCount: 9 Sum: 27.29
+Baseline Pcc (length=20000, ycount=50) Millisecond Median:3.06 Min:3.06 Max:3.07 Avg:3.06 Std:0.00 SampleCount: 9 Sum: 27.57
+Baseline Pcc (length=100000, ycount=10) Millisecond Median:3.22 Min:3.21 Max:3.23 Avg:3.22 Std:0.00 SampleCount: 9 Sum: 28.98
+Baseline Pcc (length=1000000, ycount=1) Millisecond Median:5.05 Min:5.03 Max:5.06 Avg:5.05 Std:0.01 SampleCount: 9 Sum: 45.41
 ```
-#### Optimized
-```shell
-Parallel PCC (length=10, ycount=100000) Millisecond Median:1.06 Min:1.03 Max:1.14 Avg:1.07 Std:0.03 SampleCount: 9 Sum: 9.60
-Parallel PCC (length=100, ycount=10000) Millisecond Median:0.25 Min:0.24 Max:0.26 Avg:0.25 Std:0.01 SampleCount: 9 Sum: 2.25
-Parallel PCC (length=1000, ycount=1000) Millisecond Median:0.17 Min:0.17 Max:0.17 Avg:0.17 Std:0.00 SampleCount: 9 Sum: 1.54
-Parallel PCC (length=10000, ycount=100) Millisecond Median:0.16 Min:0.15 Max:0.16 Avg:0.16 Std:0.00 SampleCount: 9 Sum: 1.40
-Parallel PCC (length=20000, ycount=50) Millisecond Median:0.17 Min:0.17 Max:0.18 Avg:0.17 Std:0.01 SampleCount: 9 Sum: 1.55
-Parallel PCC (length=100000, ycount=10) Millisecond Median:0.24 Min:0.24 Max:0.24 Avg:0.24 Std:0.00 SampleCount: 9 Sum: 2.14
-Parallel PCC (length=1000000, ycount=1) Millisecond Median:1.88 Min:1.87 Max:2.84 Avg:2.04 Std:0.32 SampleCount: 9 Sum: 18.38
-```
 
-### Performance on iOS
-On the iPHone used for testing the performance stays above x6 (ie. six times faster than baseline) for array lengths between 100 and 100,000.  At a length of 10,000 a x8.4 improvement was achieved.  See _Performance_ tests for details. Performance measurements were made with Burst Compiler's safety checks, leak detection, and debugger all turned off.
-
-#### Baseline
+#### Mac Baseline (Mono)
 ```shell
-Serial Pcc (length=10, ycount=100000) Millisecond Median:2.58 Min:2.58 Max:2.61 Avg:2.59 Std:0.01 SampleCount: 9 Sum: 23.31
-Serial Pcc (length=100, ycount=10000) Millisecond Median:2.40 Min:2.39 Max:2.42 Avg:2.40 Std:0.01 SampleCount: 9 Sum: 21.60
-Serial Pcc (length=1000, ycount=1000) Millisecond Median:2.96 Min:2.96 Max:2.97 Avg:2.97 Std:0.00 SampleCount: 9 Sum: 26.69
-Serial Pcc (length=10000, ycount=100) Millisecond Median:3.03 Min:3.03 Max:3.05 Avg:3.03 Std:0.01 SampleCount: 9 Sum: 27.29
-Serial Pcc (length=20000, ycount=50) Millisecond Median:3.06 Min:3.06 Max:3.07 Avg:3.06 Std:0.00 SampleCount: 9 Sum: 27.57
-Serial Pcc (length=100000, ycount=10) Millisecond Median:3.22 Min:3.21 Max:3.23 Avg:3.22 Std:0.00 SampleCount: 9 Sum: 28.98
-Serial Pcc (length=1000000, ycount=1) Millisecond Median:5.05 Min:5.03 Max:5.06 Avg:5.05 Std:0.01 SampleCount: 9 Sum: 45.41
+Baseline Pcc (length=10, ycount=100000) Millisecond Median:31.29 Min:31.18 Max:31.59 Avg:31.30 Std:0.11 SampleCount: 9 Sum: 281.73
+Baseline Pcc (length=100, ycount=10000) Millisecond Median:23.03 Min:22.94 Max:23.26 Avg:23.07 Std:0.10 SampleCount: 9 Sum: 207.64
+Baseline Pcc (length=1000, ycount=1000) Millisecond Median:22.13 Min:22.11 Max:22.23 Avg:22.14 Std:0.04 SampleCount: 9 Sum: 199.23
+Baseline Pcc (length=10000, ycount=100) Millisecond Median:22.17 Min:22.15 Max:22.21 Avg:22.17 Std:0.02 SampleCount: 9 Sum: 199.56
+Baseline Pcc (length=20000, ycount=50) Millisecond Median:22.34 Min:22.31 Max:22.43 Avg:22.34 Std:0.03 SampleCount: 9 Sum: 201.08
+Baseline Pcc (length=100000, ycount=10) Millisecond Median:23.48 Min:23.46 Max:23.52 Avg:23.49 Std:0.02 SampleCount: 9 Sum: 211.40
+Baseline Pcc (length=1000000, ycount=1) Millisecond Median:36.72 Min:36.68 Max:36.81 Avg:36.73 Std:0.05 SampleCount: 9 Sum: 330.59
 ```
-#### Optimized
+#### Mac Baseline (IL2CPP)
 ```shell
-Parallel PCC (length=10, ycount=100000) Millisecond Median:0.93 Min:0.91 Max:0.95 Avg:0.93 Std:0.01 SampleCount: 9 Sum: 8.39
-Parallel PCC (length=100, ycount=10000) Millisecond Median:0.39 Min:0.38 Max:0.40 Avg:0.39 Std:0.00 SampleCount: 9 Sum: 3.51
-Parallel PCC (length=1000, ycount=1000) Millisecond Median:0.37 Min:0.36 Max:0.39 Avg:0.38 Std:0.01 SampleCount: 9 Sum: 3.39
-Parallel PCC (length=10000, ycount=100) Millisecond Median:0.40 Min:0.36 Max:0.41 Avg:0.40 Std:0.02 SampleCount: 9 Sum: 3.56
-Parallel PCC (length=20000, ycount=50) Millisecond Median:0.39 Min:0.38 Max:0.41 Avg:0.39 Std:0.01 SampleCount: 9 Sum: 3.50
-Parallel PCC (length=100000, ycount=10) Millisecond Median:0.47 Min:0.45 Max:0.48 Avg:0.47 Std:0.01 SampleCount: 9 Sum: 4.20
-Parallel PCC (length=1000000, ycount=1) Millisecond Median:1.29 Min:1.29 Max:1.30 Avg:1.29 Std:0.00 SampleCount: 9 Sum: 11.63
+Baseline Pcc (length=10, ycount=100000) Millisecond Median:3.06 Min:3.02 Max:3.15 Avg:3.07 Std:0.04 SampleCount: 9 Sum: 27.67
+Baseline Pcc (length=100, ycount=10000) Millisecond Median:3.33 Min:3.32 Max:3.46 Avg:3.35 Std:0.05 SampleCount: 9 Sum: 30.18
+Baseline Pcc (length=1000, ycount=1000) Millisecond Median:4.55 Min:4.53 Max:4.56 Avg:4.55 Std:0.01 SampleCount: 9 Sum: 40.92
+Baseline Pcc (length=10000, ycount=100) Millisecond Median:4.66 Min:4.66 Max:4.67 Avg:4.66 Std:0.01 SampleCount: 9 Sum: 41.97
+Baseline Pcc (length=20000, ycount=50) Millisecond Median:4.70 Min:4.69 Max:4.71 Avg:4.70 Std:0.01 SampleCount: 9 Sum: 42.28
+Baseline Pcc (length=100000, ycount=10) Millisecond Median:4.95 Min:4.94 Max:5.72 Avg:5.03 Std:0.24 SampleCount: 9 Sum: 45.29
+Baseline Pcc (length=1000000, ycount=1) Millisecond Median:7.74 Min:7.73 Max:7.76 Avg:7.74 Std:0.01 SampleCount: 9 Sum: 69.64
+```
+#### iOS Baseline
+```shell
+Baseline Pcc (length=10, ycount=100000) Millisecond Median:2.58 Min:2.58 Max:2.61 Avg:2.59 Std:0.01 SampleCount: 9 Sum: 23.31
+Baseline Pcc (length=100, ycount=10000) Millisecond Median:2.40 Min:2.39 Max:2.42 Avg:2.40 Std:0.01 SampleCount: 9 Sum: 21.60
+Baseline Pcc (length=1000, ycount=1000) Millisecond Median:2.96 Min:2.96 Max:2.97 Avg:2.97 Std:0.00 SampleCount: 9 Sum: 26.69
+Baseline Pcc (length=10000, ycount=100) Millisecond Median:3.03 Min:3.03 Max:3.05 Avg:3.03 Std:0.01 SampleCount: 9 Sum: 27.29
+Baseline Pcc (length=20000, ycount=50) Millisecond Median:3.06 Min:3.06 Max:3.07 Avg:3.06 Std:0.00 SampleCount: 9 Sum: 27.57
+Baseline Pcc (length=100000, ycount=10) Millisecond Median:3.22 Min:3.21 Max:3.23 Avg:3.22 Std:0.00 SampleCount: 9 Sum: 28.98
+Baseline Pcc (length=1000000, ycount=1) Millisecond Median:5.05 Min:5.03 Max:5.06 Avg:5.05 Std:0.01 SampleCount: 9 Sum: 45.41
+```
+#### Mac Optimized
+```shell
+Optimized PCC (length=10, ycount=100000) Millisecond Median:1.07 Min:1.05 Max:1.09 Avg:1.07 Std:0.01 SampleCount: 9 Sum: 9.64
+Optimized PCC (length=100, ycount=10000) Millisecond Median:0.25 Min:0.25 Max:0.27 Avg:0.25 Std:0.00 SampleCount: 9 Sum: 2.27
+Optimized PCC (length=1000, ycount=1000) Millisecond Median:0.18 Min:0.18 Max:0.18 Avg:0.18 Std:0.00 SampleCount: 9 Sum: 1.63
+Optimized PCC (length=10000, ycount=100) Millisecond Median:0.16 Min:0.15 Max:0.16 Avg:0.16 Std:0.00 SampleCount: 9 Sum: 1.40
+Optimized PCC (length=20000, ycount=50) Millisecond Median:0.17 Min:0.16 Max:0.18 Avg:0.17 Std:0.00 SampleCount: 9 Sum: 1.55
+Optimized PCC (length=100000, ycount=10) Millisecond Median:0.26 Min:0.25 Max:0.26 Avg:0.26 Std:0.00 SampleCount: 9 Sum: 2.33
+Optimized PCC (length=1000000, ycount=1) Millisecond Median:1.95 Min:1.94 Max:1.99 Avg:1.96 Std:0.02 SampleCount: 9 Sum: 17.60
+```
+#### iOS Optimized
+```shell
+Optimized PCC (length=10, ycount=100000) Millisecond Median:0.93 Min:0.91 Max:0.95 Avg:0.93 Std:0.01 SampleCount: 9 Sum: 8.39
+Optimized PCC (length=100, ycount=10000) Millisecond Median:0.39 Min:0.38 Max:0.40 Avg:0.39 Std:0.00 SampleCount: 9 Sum: 3.51
+Optimized PCC (length=1000, ycount=1000) Millisecond Median:0.37 Min:0.36 Max:0.39 Avg:0.38 Std:0.01 SampleCount: 9 Sum: 3.39
+Optimized PCC (length=10000, ycount=100) Millisecond Median:0.40 Min:0.36 Max:0.41 Avg:0.40 Std:0.02 SampleCount: 9 Sum: 3.56
+Optimized PCC (length=20000, ycount=50) Millisecond Median:0.39 Min:0.38 Max:0.41 Avg:0.39 Std:0.01 SampleCount: 9 Sum: 3.50
+Optimized PCC (length=100000, ycount=10) Millisecond Median:0.47 Min:0.45 Max:0.48 Avg:0.47 Std:0.01 SampleCount: 9 Sum: 4.20
+Optimized PCC (length=1000000, ycount=1) Millisecond Median:1.29 Min:1.29 Max:1.30 Avg:1.29 Std:0.00 SampleCount: 9 Sum: 11.63
 ```
 
 ### Hardware used
