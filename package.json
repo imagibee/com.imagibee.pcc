@@ -3,8 +3,8 @@
   "version": "0.2.2",
   "displayName": "Imagibee Parallel",
   "description": "A parallelized Pearson Correlation Coefficient algorithm",
-  "documentationUrl": "https://github.com/imagibee/com.imagibee.parallel/blob/v0.2.1/README.md",
-  "licensesUrl": "https://github.com/imagibee/com.imagibee.parallel/blob/v0.2.1/LICENSE",
+  "documentationUrl": "https://github.com/imagibee/com.imagibee.parallel/blob/v0.2.2/README.md",
+  "licensesUrl": "https://github.com/imagibee/com.imagibee.parallel/blob/v0.2.2/LICENSE",
   "unity": "2021.3",
   "dependencies": {
     "com.unity.burst": "1.6.6",
