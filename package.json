@@ -1,6 +1,6 @@
 {
   "name": "com.imagibee.parallel",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "displayName": "Imagibee Parallel",
   "description": "A parallelized Pearson Correlation Coefficient algorithm",
   "documentationUrl": "https://github.com/imagibee/com.imagibee.parallel/blob/v0.2.1/README.md",

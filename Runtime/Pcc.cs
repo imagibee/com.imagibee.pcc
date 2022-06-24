@@ -93,11 +93,12 @@ namespace Imagibee.Parallel {
 
             public void Execute(int startIndex, int count)
             {
+                var recipXResult = 1 / XResult.Value;
                 for (int i = startIndex; i < startIndex + count; ++i) {
                     //Debug.Log($"i={i}, XSum={XResults[0]}, XResult={XResults[1]}, YSum={YSum[i]}, YYSUmProd={YYSumProd[0]}, XYSumProd={XYSumProd[i]}");
                     R[i] =
+                        recipXResult *
                         (Length * XYSumProd[i] - XSum.Value * YSum[i]) /
-                        XResult.Value /
                         (math.sqrt(Length * YYSumProd[i] - YSum[i] * YSum[i]));
                 }
             }
@@ -139,7 +140,7 @@ namespace Imagibee.Parallel {
                 XYSumProd = XYSumProd,
                 R = R
             };
-            var newDeps = mergeJob.ScheduleBatch(YCount, 4, JobHandle.CombineDependencies(jobs));
+            var newDeps = mergeJob.ScheduleBatch(YCount, 100, JobHandle.CombineDependencies(jobs));
             jobs.Dispose();
             return newDeps;
         }
