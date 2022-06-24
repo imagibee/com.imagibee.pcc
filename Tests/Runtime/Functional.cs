@@ -73,10 +73,13 @@ public class Functional
         pccJob.Y.CopyFrom(y);
         pccJob.Schedule().Complete();
         var result = pccJob.R[0];
-        Debug.Log($"correlation is {result}");
+        var resultBaseline = Functions.Pcc(x, y);
+        Debug.Log($"PccJob correlation is {result} (baseline is {resultBaseline})");
         pccJob.Dispose();
         Assert.LessOrEqual(result, 1f);
         Assert.GreaterOrEqual(result, -1f);
+        Assert.LessOrEqual(result / resultBaseline, 1.01f);
+        Assert.GreaterOrEqual(result / resultBaseline, 0.99f);
     }
 
     [Test]

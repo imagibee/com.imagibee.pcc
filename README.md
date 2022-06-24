@@ -4,19 +4,19 @@ A Unity package that implements a parallelized [Pearson Correlation Coefficient]
 * __PccJob__ - computes the PCC of a given array vs 1 or more reference arrays
 
 ## Performance
-The performance improvement for three tested configurations is summarized in the table below.  See _Performance_ tests for details. Performance measurements were made with the Burst Compiler's safety checks, leak detection, and debugger all turned off.
+Before going to the trouble of incorporating this package into your application it is nice to have some idea how much improvement is expected.  This section is intended to provide just that. The performance improvement for Mac and iOS configurations is summarized in the table below.  The optimized Mac version was compared to both Mono and IL2CPP baselines.  See _Performance_ tests for details. Performance measurements were made with the Burst Compiler's safety checks, leak detection, and debugger all turned off.
 
-| Configuration | Peak Improvement | Typical Improvement
-|:--------------|:-----------------|:-------------------
-| Mac Mono      | x140             | x90
-| Mac IL2CPP    | x31              | x20
-| iOS           | x8.4             | x6
+| Baseline Configuration | Peak Improvement | Typical Improvement
+|:-----------------------|:-----------------|:-------------------
+| Mac Mono               | x140             | x90
+| Mac IL2CPP             | x30              | x20
+| iOS                    | x9               | x6
 
-The performance improvement for the Mac Mono configuration stayed above x90 (ie. ninety times faster than baseline) for array lengths between 100 and 100,000.  At a length of 10,000 a x140 improvement was measured.  Of the configurations tested Mac Mono benefitted most.  This result matches expectations since the Mono baseline is inherently slower than IL2CPP.
+For array lengths between 100 and 100,000 the performance improvement for the Mac Mono configuration stayed above x90 (ie. the optimized code ran ninety times faster than this baseline).  Performance peaked around x140 with an array length of 10,000.  Of the configurations tested the Mac Mono baseline benefitted the most which is not suprising since Mono produces code that runs slower than IL2CPP.
 
-The performance improvement for the Mac IL2CPP configuration stayed above x20 for array lengths between 1000 and 100,000.  At a length of 10,000 a peak of x31 improvement was measured.  
+For array lengths between 1,000 and 100,000 the performance improvement of the Mac IL2CPP baseline stayed above x20.  Performance peaked around x30 with an array length of 10,000.  
 
-The performance improvement for the iOS configuration stayed above x6 (ie. six times faster than baseline) for array lengths between 100 and 100,000.  At a length of 10,000 a x8.4 improvement was measured.  I was a little suprised to see the iOS baseline outperform the Mac IL2CPP baseline by about 30%.
+For array lengths between 100 and 100,000 the performance improvement of the iOS baseline stayed above x6.  Performance peaked around x9 with an array length of 10,000.  The iOS baseline benefitted the least from this type of optimization.  In fact it was the fastest baseline.  This result suprised me.  I did not expect the iOS baseline to be faster than the Mac IL2CPP baseline. I can only speculate as to the reason.  Perhaps it is due to the massive size of L2 cache on the iOS device compared to the Mac (see [Hardware Used](#hardware-used)).
 
 ### Mac Baseline (Mono)
 ```shell
@@ -50,13 +50,13 @@ Baseline Pcc (length=1000000, ycount=1) Millisecond Median:5.05 Min:5.03 Max:5.0
 ```
 ### Mac Optimized
 ```shell
-Optimized PCC (length=10, ycount=100000) Millisecond Median:1.07 Min:1.05 Max:1.09 Avg:1.07 Std:0.01 SampleCount: 9 Sum: 9.64
-Optimized PCC (length=100, ycount=10000) Millisecond Median:0.25 Min:0.25 Max:0.27 Avg:0.25 Std:0.00 SampleCount: 9 Sum: 2.27
-Optimized PCC (length=1000, ycount=1000) Millisecond Median:0.18 Min:0.18 Max:0.18 Avg:0.18 Std:0.00 SampleCount: 9 Sum: 1.63
-Optimized PCC (length=10000, ycount=100) Millisecond Median:0.16 Min:0.15 Max:0.16 Avg:0.16 Std:0.00 SampleCount: 9 Sum: 1.40
-Optimized PCC (length=20000, ycount=50) Millisecond Median:0.17 Min:0.16 Max:0.18 Avg:0.17 Std:0.00 SampleCount: 9 Sum: 1.55
-Optimized PCC (length=100000, ycount=10) Millisecond Median:0.26 Min:0.25 Max:0.26 Avg:0.26 Std:0.00 SampleCount: 9 Sum: 2.33
-Optimized PCC (length=1000000, ycount=1) Millisecond Median:1.95 Min:1.94 Max:1.99 Avg:1.96 Std:0.02 SampleCount: 9 Sum: 17.60
+Optimized PCC (length=10, ycount=100000) Millisecond Median:0.88 Min:0.83 Max:0.93 Avg:0.88 Std:0.03 SampleCount: 9 Sum: 7.94
+Optimized PCC (length=100, ycount=10000) Millisecond Median:0.24 Min:0.24 Max:0.26 Avg:0.25 Std:0.01 SampleCount: 9 Sum: 2.23
+Optimized PCC (length=1000, ycount=1000) Millisecond Median:0.17 Min:0.17 Max:0.18 Avg:0.17 Std:0.00 SampleCount: 9 Sum: 1.52
+Optimized PCC (length=10000, ycount=100) Millisecond Median:0.16 Min:0.16 Max:0.17 Avg:0.16 Std:0.00 SampleCount: 9 Sum: 1.45
+Optimized PCC (length=20000, ycount=50) Millisecond Median:0.17 Min:0.17 Max:0.18 Avg:0.17 Std:0.00 SampleCount: 9 Sum: 1.56
+Optimized PCC (length=100000, ycount=10) Millisecond Median:0.25 Min:0.24 Max:0.26 Avg:0.25 Std:0.00 SampleCount: 9 Sum: 2.23
+Optimized PCC (length=1000000, ycount=1) Millisecond Median:1.95 Min:1.91 Max:1.97 Avg:1.94 Std:0.02 SampleCount: 9 Sum: 17.49
 ```
 ### iOS Optimized
 ```shell
@@ -69,7 +69,7 @@ Optimized PCC (length=100000, ycount=10) Millisecond Median:0.47 Min:0.45 Max:0.
 Optimized PCC (length=1000000, ycount=1) Millisecond Median:1.29 Min:1.29 Max:1.30 Avg:1.29 Std:0.00 SampleCount: 9 Sum: 11.63
 ```
 
-### Hardware used
+### Hardware Used
 The hardware used to measure performance for Mac was a Macbook Pro
 - 8-Core Intel Core i9
 - L2 Cache (per Core):	256 KB

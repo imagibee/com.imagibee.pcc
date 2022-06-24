@@ -9,9 +9,7 @@
         "Imagibee.Parallel"
     ],
     "includePlatforms": [],
-    "excludePlatforms": [
-        "iOS"
-    ],
+    "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
