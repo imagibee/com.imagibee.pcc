@@ -2,6 +2,7 @@ using Unity.Burst;
 using Unity.Jobs;
 using Unity.Collections;
 using Unity.Mathematics;
+using Unity.Collections.LowLevel.Unsafe;
 using System;
 using UnityEngine;
 
@@ -18,6 +19,14 @@ namespace Imagibee.Parallel {
         public NativeArray<float> YYSumProd;
         public NativeArray<float> XYSumProd;
         public NativeArray<float> R;
+
+        [BurstCompile]
+        public unsafe void CopyToX(float[] source, int startIndex)
+        {
+            fixed (float* srcPtr = source) {
+                UnsafeUtility.MemCpy(X.GetUnsafePtr(), srcPtr + startIndex, sizeof(float) * Length);
+            }
+        }
 
         [BurstCompile(FloatMode = FloatMode.Fast, FloatPrecision = FloatPrecision.Low)]
         struct PccPartitionJobX : IJobParallelForBatch {
