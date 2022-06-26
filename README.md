@@ -82,64 +82,82 @@ The hardware used to measure performance for iOS was iPhone 12 Pro
 - L3 Cache: 16 MB
 - Memory:    6 GB
 ## Usage
-This example illustrates the usage of _PccJob_ with some annotation.
+Below is a contrived example that is meant to illustrate how _PccJob_ may be used within a Unity MonoBehaviour.
 ```cs
 using Imagibee.Parallel;
+...
 
-// Here x represents a frequently changing value that is
-// correlated against a set of infrequently changing y.
-var x = new List<float[]>
+class MyCorrelator : MonoBehaviour
 {
-    new float[] { 1, 2, 3, 4, 5 },
-    new float[] { 2, 4, 6, 8, 10 }
-};
-// There can be 1 or more y, concatenated together, the
-// length of each y must match the length of x.  Here we
-// have two y, each of length 5, concatenated together.
-var y = new float[] { 1, 2, 3, 4, 5, -1, -2, -3, -4, -5 };
+    DataSource liveData;
+    DataLibrary referenceData;
+    PccJob pccJob;
 
-// length is the length of each x and y
-var length = x[0].Length;
+    void Start()
+    {
+        // The source of the live data we want to correlate
+        liveData = GameObject.FindWithTag("LiveData")
+            .GetComponent<DataSource>();
 
-// ycount is the number of arrays contained in y
-var ycount = y.Length / length;
+        // The library of reference data we want to correlate against
+        referenceData = GameObject.FindWithTag("ReferenceData")
+            .GetComponent<DataLibrary>();
 
-// Create a correlation job
-var pccJob = new PccJob();
+        // Allocate native storage for the lifetime of the MonoBehaviour
+        pccJob.Allocate(
+            referenceData.Values[0].Length,
+            referenceData.Values.Count);
 
-// Allocate the native containers for the job
-pccJob.Allocate(length, ycount, Allocator.Persistent);
+        // Flatten reference data into a single array
+        var y = new float[pccJob.Length * pccJob.YCount];
+        for (var i=0; i<pccJob.YCount; ++i) {
+            Array.Copy(
+                referenceData.Values[i],
+                0,
+                y,
+                i * pccJob.Length,
+                pccJob.Length); 
+        }
 
-// Copy the infrequently changing values of y to native storage
-pccJob.Y.CopyFrom(y);
+        // Copy flattened reference data into native storage
+        pccJob.Y.CopyFrom(y);
+    }
 
-// Compute the correlation of two values of x using the same set of y
-for (var i = 0; i < x.Count; ++i) {
-    // Copy the current value of x to native storage
-    pccJob.X.CopyFrom(x[i]);
+    void Update()
+    {
+        // Temporary storage for sorting the results where
+        // Item1: i, Item2: R[i]
+        var corData = new List<Tuple<int, float>>();
 
-    // Schedule and wait for completion of two corelation values
-    // in pccJob.R
-    // 1) the correlation of x[i] with the first 5 elements of y
-    // 2) the correlation of x[i] with the last 5 elements of y
-    pccJob.Schedule().Complete();
+        // Copy the latest data from our data source into X
+        pccJob.CopyToX(liveData.Value, 0);
 
-    // Do something with results
-    for (var j = 0; j < ycount; ++j) {
-        Debug.Log($"loop {i}, result {j}: {pccJob.R[j]}");
+        // Compute the correlation of X vs each Y
+        pccJob.Schedule.Complete();
+
+        // Store correlations and index so we can sort them
+        for (var i = 0; i < pccJob.YCount; ++i) {
+            corData.Add(new Tuple<int, float>(i, pccJob.R[i]));
+        }
+
+        // Sort by descending correlation
+        corData.Sort((a, b) => b.Item2.CompareTo(a.Item2));
+
+        // Do something with the correlation data
+        ProcessCorData(corData);
+    }
+
+    void ProcessCorData(List<Tuple<int, float>>  corData)
+    {
+        Debug.Log($"max correlation at {corData[0].Item1} is {corData[0].Item2}");
+    }
+
+    void OnDestroy()
+    {
+        // Dispose of native storage
+        pccJob.Dispose();
     }
 }
-
-// Dispose of the native containers once we are through with the job
-pccJob.Dispose();
-```
-
-The console output is
-```shell
-loop 0, result 0: 1
-loop 0, result 1: -1
-loop 1, result 0: 1
-loop 1, result 1: -1
 ```
 
 ## License
