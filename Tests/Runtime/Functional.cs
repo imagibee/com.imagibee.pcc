@@ -12,11 +12,11 @@ public class Functional
         var y = new float[] { 1, 2, 3, 4, 5, -1, -2, -3, -4, -5 };
         var results = new List<float>();
         var pccJob = new PccJob();
-        pccJob.Allocate(x.Length-1, y.Length / x.Length-1);
+        pccJob.Allocate(x.Length-1, y.Length / (x.Length-1));
         pccJob.CopyToX(x, 1);
         pccJob.Y.CopyFrom(y);
         pccJob.Schedule().Complete();
-        for (var i = 0; i < y.Length / x.Length; ++i) {
+        for (var i = 0; i < pccJob.YCount; ++i) {
             results.Add(pccJob.R[i]);
         }
         pccJob.Dispose();
@@ -47,7 +47,7 @@ public class Functional
         pccJob.CopyToX(x, 0);
         pccJob.Y.CopyFrom(y);
         pccJob.Schedule().Complete();
-        for (var i = 0; i < y.Length / x.Length; ++i) {
+        for (var i = 0; i < pccJob.YCount; ++i) {
             results.Add(pccJob.R[i]);
         }
         pccJob.Dispose();
