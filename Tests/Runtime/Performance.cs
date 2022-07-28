@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using Unity.PerformanceTesting;
-using Imagibee.Parallel;
+using Imagibee.Pcc;
 
 public class Performance {
     readonly int[] LENGTHS = { 10, 100, 1000, 10000, 20000, 100000, 1000000 };

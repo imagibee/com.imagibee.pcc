@@ -1,12 +1,12 @@
 {
-    "name": "Imagibee.Parallel.Tests",
+    "name": "Imagibee.Pcc.Tests",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "Unity.PerformanceTesting",
         "Unity.Collections",
-        "Imagibee.Parallel"
+        "Imagibee.Pcc"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

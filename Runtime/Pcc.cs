@@ -6,8 +6,8 @@ using Unity.Collections.LowLevel.Unsafe;
 using System;
 using UnityEngine;
 
-namespace Imagibee.Parallel {
-    [BurstCompile(FloatMode = Imagibee.Parallel.Burst.FloatMode, FloatPrecision = Imagibee.Parallel.Burst.FloatPrecision)]
+namespace Imagibee.Pcc {
+    [BurstCompile(FloatMode = Imagibee.Pcc.Burst.FloatMode, FloatPrecision = Imagibee.Pcc.Burst.FloatPrecision)]
     public struct PccJob : IDisposable {
         public int Length;
         public int YCount;
@@ -28,7 +28,7 @@ namespace Imagibee.Parallel {
             }
         }
 
-        [BurstCompile(FloatMode = Imagibee.Parallel.Burst.FloatMode, FloatPrecision = Imagibee.Parallel.Burst.FloatPrecision)]
+        [BurstCompile(FloatMode = Imagibee.Pcc.Burst.FloatMode, FloatPrecision = Imagibee.Pcc.Burst.FloatPrecision)]
         struct PccPartitionJobX : IJobParallelForBatch {
             public int YCount;
             public int Length;
@@ -52,7 +52,7 @@ namespace Imagibee.Parallel {
             }
         }
 
-        [BurstCompile(FloatMode = Imagibee.Parallel.Burst.FloatMode, FloatPrecision = Imagibee.Parallel.Burst.FloatPrecision)]
+        [BurstCompile(FloatMode = Imagibee.Pcc.Burst.FloatMode, FloatPrecision = Imagibee.Pcc.Burst.FloatPrecision)]
         struct PccPartitionJobY : IJobParallelForBatch {
             public int YCount;
             public int Length;
@@ -84,7 +84,7 @@ namespace Imagibee.Parallel {
             }
         }
 
-        [BurstCompile(FloatMode = Imagibee.Parallel.Burst.FloatMode, FloatPrecision = Imagibee.Parallel.Burst.FloatPrecision)]
+        [BurstCompile(FloatMode = Imagibee.Pcc.Burst.FloatMode, FloatPrecision = Imagibee.Pcc.Burst.FloatPrecision)]
         struct PccMergeJob : IJobParallelForBatch {
             public int Length;
             [ReadOnly]
@@ -113,7 +113,7 @@ namespace Imagibee.Parallel {
             }
         }
 
-        [BurstCompile(FloatMode = Imagibee.Parallel.Burst.FloatMode, FloatPrecision = Imagibee.Parallel.Burst.FloatPrecision)]
+        [BurstCompile(FloatMode = Imagibee.Pcc.Burst.FloatMode, FloatPrecision = Imagibee.Pcc.Burst.FloatPrecision)]
         public JobHandle Schedule(JobHandle deps = new JobHandle())
         {
             var jobs = new NativeList<JobHandle>(2, Allocator.TempJob);

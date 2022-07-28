@@ -1,5 +1,5 @@
-# com.imagibee.parallel
-A Unity package that implements a parallelized [Pearson Correlation Coefficient](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient) (PCC) algorithm.  The problem being solved by this package is performance improvements for applications that need to compute many correlations.  The package includes:
+# com.imagibee.pcc
+A Unity package that contains serial and parallel implementations of the [Pearson Correlation Coefficient](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient) (PCC) algorithm.  The main problem being solved by this package is performance improvements for applications that need to compute many correlations.  The package includes:
 
 * `PccJob` - computes the PCC of a given array vs 1 or more reference arrays
 
@@ -21,7 +21,7 @@ For array lengths between 100 and 100,000 the performance improvement of the iOS
 ## Usage
 Here is a contrived example that is meant to illustrate how `PccJob` may be incorporated by a Unity MonoBehaviour.
 ```cs
-using Imagibee.Parallel;
+using Imagibee.Pcc;
 ...
 
 class MyCorrelator : MonoBehaviour
@@ -100,12 +100,12 @@ class MyCorrelator : MonoBehaviour
 ## Burst Settings
 By default `PccJob` uses `Unity.Burst.FloatMode.Fast` and `Unity.Burst.FloatPrecision.Low`.  The following pre-processor symbols [may be defined by a project](https://docs.unity3d.com/Manual/CustomScriptingSymbols.html) to change the `FloatMode` or `FloatPrecision` used by the PccJob.
 
-* IMAGIBEE_PARALLEL_FLOATMODE_DEFAULT
-* IMAGIBEE_PARALLEL_FLOATMODE_DETERMINISTIC
-* IMAGIBEE_PARALLEL_FLOATMODE_STRICT
-* IMAGIBEE_PARALLEL_FLOATPRECISION_STANDARD
-* IMAGIBEE_PARALLEL_FLOATPRECISION_HIGH
-* IMAGIBEE_PARALLEL_FLOATPRECISION_MEDIUM
+* IMAGIBEE_PCC_FLOATMODE_DEFAULT
+* IMAGIBEE_PCC_FLOATMODE_DETERMINISTIC
+* IMAGIBEE_PCC_FLOATMODE_STRICT
+* IMAGIBEE_PCC_FLOATPRECISION_STANDARD
+* IMAGIBEE_PCC_FLOATPRECISION_HIGH
+* IMAGIBEE_PCC_FLOATPRECISION_MEDIUM
 
 ## License
 [MIT](https://www.mit.edu/~amini/LICENSE.md)
@@ -126,17 +126,17 @@ This package uses [semantic versioning](https://en.wikipedia.org/wiki/Software_v
 This package is intended to be used from an existing Unity project.  Using the Package Manager select _Add package from git URL..._ and provide the URL to the version you want in this git repository.
 
 ## Issues
-Report and track issues [here](https://github.com/imagibee/com.imagibee.parallel/issues).
+Report and track issues [here](https://github.com/imagibee/com.imagibee.pcc/issues).
 
 ## Contributing
 Minor changes such as bug fixes are welcome.  Simply make a [pull request](https://opensource.com/article/19/7/create-pull-request-github).  Please discuss more significant changes prior to making the pull request by opening a new issue that describes the change.
 
 ## Testing
-The package includes _Functional_ and _Performance_ tests.  To run the tests open the [Test Runner](https://docs.unity3d.com/2020.3/Documentation/Manual/testing-editortestsrunner.html).  Select the `Imagibee.Parallel.Tests.dll` and _Run Selected_.  If the tests do not show up in the _Test Runner_ you might need to add the following entry to your [manifest file](https://docs.unity3d.com/2020.3/Documentation/Manual/upm-manifestPrj.html).
+The package includes _Functional_ and _Performance_ tests.  To run the tests open the [Test Runner](https://docs.unity3d.com/2020.3/Documentation/Manual/testing-editortestsrunner.html).  Select the `Imagibee.Pcc.Tests.dll` and _Run Selected_.  If the tests do not show up in the _Test Runner_ you might need to add the following entry to your [manifest file](https://docs.unity3d.com/2020.3/Documentation/Manual/upm-manifestPrj.html).
 
 ```json
 "testables": [
-    "com.imagibee.parallel"
+    "com.imagibee.pcc"
   ]
 ```
 
