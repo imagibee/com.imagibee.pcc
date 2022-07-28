@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Imagibee.Parallel {
+namespace Imagibee.Pcc {
     // Only intended to form a baseline for testing
     public class Functions {
         // Returns the sum of the array

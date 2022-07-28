@@ -1,5 +1,5 @@
 using Unity.Jobs;
-using Imagibee.Parallel;
+using Imagibee.Pcc;
 
 //[assembly: RegisterGenericJobType(typeof(PccJob<int>))]
 //[assembly: RegisterGenericJobType(typeof(PccJob<uint>))]
